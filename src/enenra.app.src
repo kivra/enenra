@@ -1,13 +1,8 @@
 {application, enenra, [
     {description, "An OTP library for Google Cloud Storage."},
-    {vsn, "0.3.0"},
+    {vsn, "0.4.5"},
     {registered, []},
-    {applications, [
-        kernel,
-        stdlib,
-        jiffy,
-        hackney
-    ]},
+    {applications, [kernel, stdlib, hackney]},
     {env, []},
     {mod, {enenra_app, []}}
 ]}.

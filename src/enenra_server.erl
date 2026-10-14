@@ -478,7 +478,7 @@ decode_response(409, _Headers, Client) ->
 decode_response(Ok, _Headers, Client) when Ok == 200; Ok == 201 ->
     {ok, Body} = hackney:body(Client),
     try decode(Body) of
-        Results -> {ok, Results}
+        {Results} -> {ok, Results}
     catch
         Error -> Error
     end;
@@ -489,7 +489,7 @@ decode_response(204, _Headers, Client) ->
 decode_response(_Status, _Headers, Client) ->
     {ok, Body} = hackney:body(Client),
     try decode(Body) of
-        Results -> {ok, Results}
+        {Results} -> {ok, Results}
     catch
         Error -> Error
     end.
@@ -584,4 +584,10 @@ add_metadata([_H | T], List) ->
 
 encode(JSON) -> iolist_to_binary(json:encode(JSON)).
 
-decode(Binary) -> maps:to_list(json:decode(Binary)).
+decode(Binary) ->
+    to_old(json:decode(Binary)).
+
+to_old(Map = #{}) -> {[{K, to_old(V)} || K := V <- Map]};
+to_old([]) -> [];
+to_old(Array = [_ | _]) -> [to_old(E) || E <- Array];
+to_old(Val) -> Val.
